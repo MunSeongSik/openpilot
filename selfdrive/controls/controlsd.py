@@ -321,7 +321,7 @@ class Controls:
         if self.state == State.enabled:
           if self.events.any(ET.SOFT_DISABLE):
             self.state = State.softDisabling
-            self.soft_disable_timer = 300   # 3s
+            self.soft_disable_timer = 100   # 1s
             self.current_alert_types.append(ET.SOFT_DISABLE)
 
         # SOFT DISABLING
