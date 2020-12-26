@@ -84,10 +84,10 @@ class LanePlanner:
     r_prob *= mod
 
     # Reduce reliance on uncertain lanelines
-    l_std_mod = interp(self.l_std, [.15, .3], [1.0, 0.0])
-    r_std_mod = interp(self.r_std, [.15, .3], [1.0, 0.0])
-    l_prob *= l_std_mod
-    r_prob *= r_std_mod
+    #l_std_mod = interp(self.l_std, [.15, .3], [1.0, 0.0])
+    #r_std_mod = interp(self.r_std, [.15, .3], [1.0, 0.0])
+    #l_prob *= l_std_mod
+    #r_prob *= r_std_mod
 
     # Find current lanewidth
     self.lane_width_certainty += 0.05 * (l_prob * r_prob - self.lane_width_certainty)
