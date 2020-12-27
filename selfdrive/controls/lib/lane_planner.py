@@ -60,8 +60,8 @@ class LanePlanner:
     self.r_prob = md.rightLane.prob  # right line prob
 
     if len(md.meta.desireState):
-      self.l_lane_change_prob = md.meta.desireState[log.PathPlan.Desire.laneChangeLeft - 1]
-      self.r_lane_change_prob = md.meta.desireState[log.PathPlan.Desire.laneChangeRight - 1]
+      self.l_lane_change_prob = md.meta.desireState[log.PathPlan.Desire.laneChangeLeft]
+      self.r_lane_change_prob = md.meta.desireState[log.PathPlan.Desire.laneChangeRight]
 
   def update_d_poly(self, v_ego):
     # only offset left and right lane lines; offsetting p_poly does not make sense
@@ -84,10 +84,10 @@ class LanePlanner:
     r_prob *= mod
 
     # Reduce reliance on uncertain lanelines
-    #l_std_mod = interp(self.l_std, [.15, .3], [1.0, 0.0])
-    #r_std_mod = interp(self.r_std, [.15, .3], [1.0, 0.0])
-    #l_prob *= l_std_mod
-    #r_prob *= r_std_mod
+    l_std_mod = interp(self.l_std, [.15, .3], [1.0, 0.0])
+    r_std_mod = interp(self.r_std, [.15, .3], [1.0, 0.0])
+    l_prob *= l_std_mod
+    r_prob *= r_std_mod
 
     # Find current lanewidth
     self.lane_width_certainty += 0.05 * (l_prob * r_prob - self.lane_width_certainty)
@@ -104,10 +104,6 @@ class LanePlanner:
     path_from_right_lane[3] += clipped_lane_width / 2.0
 
     lr_prob = l_prob + r_prob - l_prob * r_prob
-
-    # neokii
-    if lr_prob > 0.65:
-      lr_prob = min(lr_prob * 1.35, 1.0)
 
     d_poly_lane = (l_prob * path_from_left_lane + r_prob * path_from_right_lane) / (l_prob + r_prob + 0.0001)
     self.d_poly = lr_prob * d_poly_lane + (1.0 - lr_prob) * self.p_poly.copy()
